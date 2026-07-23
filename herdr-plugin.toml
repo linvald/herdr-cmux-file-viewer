@@ -1,0 +1,10 @@
+id = "linvald.herder-cmux-file-viewer"
+name = "cmux File Viewer Sync"
+version = "0.1.0"
+min_herdr_version = "0.7.0"
+description = "Syncs cmux's right-side file viewer to whichever herdr space is currently focused."
+platforms = ["macos"]
+
+[[events]]
+on = "pane.focused"
+command = ["python3", "sync.py"]
