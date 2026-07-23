@@ -5,6 +5,9 @@ min_herdr_version = "0.7.0"
 description = "Syncs cmux's right-side file viewer to whichever herdr space is currently focused."
 platforms = ["macos"]
 
+[[build]]
+command = ["python3", "install_hook.py"]
+
 [[actions]]
 id = "install-shell-hook"
 title = "Install shell hook (zsh/bash/fish)"

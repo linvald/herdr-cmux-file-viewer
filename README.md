@@ -47,36 +47,42 @@ UUID).
 
 ## Install
 
-1. Install the plugin:
+```sh
+herdr plugin install <owner>/herdr-cmux-file-viewer
+```
 
-   ```sh
-   herdr plugin install <owner>/herdr-cmux-file-viewer
-   ```
+(Replace `<owner>` with wherever you cloned this from.)
 
-   (Replace `<owner>` with wherever you cloned this from. For local
-   development, use `herdr plugin link /path/to/herdr-cmux-file-viewer`
-   instead — see [herdr's plugin docs](https://herdr.dev/docs/plugins/).)
+That's it for a normal install. `herdr-plugin.toml` declares `install_hook.py`
+as a `[[build]]` command, which herdr runs automatically once, right after
+you confirm the install and before it registers the plugin — it appends a
+marked block to `~/.zshrc` and `~/.bashrc` (and `~/.config/fish/config.fish`
+if `fish` is on `PATH`), so `cd` also keeps the file viewer in sync (see
+[How it works](#how-it-works) for why this is needed on top of the plugin
+event). It's worth knowing this modifies your shell rc files without a
+separate confirmation — that's the tradeoff for the plugin actually working
+out of the box. It's idempotent: each rc file is checked for the marker and
+skipped if already present, never duplicated.
 
-2. Install the shell hook:
+Then reload: `herdr server reload-config` and open a new shell (or `source`
+the rc file) in any panes you already have open — existing shells don't
+pick up an rc file change retroactively.
 
-   ```sh
-   herdr plugin action invoke install-shell-hook --plugin linvald.herdr-cmux-file-viewer
-   ```
+**Local development** via `herdr plugin link /path/to/herdr-cmux-file-viewer`
+does *not* run `[[build]]` (per
+[herdr's plugin docs](https://herdr.dev/docs/plugins/), build only runs on
+`plugin install`) — after linking, run the shell hook install manually:
 
-   This appends a marked block to `~/.zshrc` and `~/.bashrc` (and
-   `~/.config/fish/config.fish` if `fish` is on `PATH`), so `cd` also keeps
-   the file viewer in sync — see [How it works](#how-it-works) for why this
-   is needed on top of the plugin event. Safe to re-run: each rc file is
-   checked for the marker and skipped if already installed, never
-   duplicated. If you forked this repo under a different plugin id, edit
-   `PLUGIN_ID` at the top of `install_hook.py` first.
+```sh
+herdr plugin action invoke install-shell-hook --plugin linvald.herdr-cmux-file-viewer
+```
 
-   Prefer to do it by hand, or don't use any of zsh/bash/fish? See
-   `install_hook.py` for the exact snippet per shell and adapt it.
+The same command is also there for re-running later — e.g. you installed
+fish after the fact, or forked this repo under a different plugin id (edit
+`PLUGIN_ID` at the top of `install_hook.py` first in that case).
 
-3. Reload: `herdr server reload-config` and open a new shell (or `source`
-   the rc file) in any panes you already have open — existing shells don't
-   pick up an rc file change retroactively.
+Prefer to do it by hand, or use a shell that isn't zsh/bash/fish? See
+`install_hook.py` for the exact snippet per shell and adapt it.
 
 ## Verifying it worked
 
